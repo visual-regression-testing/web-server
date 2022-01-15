@@ -29,7 +29,7 @@ export function uploadToS3(req: NextApiRequest, bucket: string): Promise<void> {
         s3Client.upload(
             {
                 Bucket: bucket, // todo hardcode
-                Key: `${project}/${branch}/${branchToCompareAgainst}/${testName}.jpg`, // file.newFilename for generated filename without extension
+                Key: `${project}/${branchToCompareAgainst}/${branch}/${testName}.jpg`, // file.newFilename for generated filename without extension
                 Body: pass,
                 ACL: 'public-read'
             },
