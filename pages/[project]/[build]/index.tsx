@@ -3,7 +3,7 @@ import {useRouter} from 'next/router';
 
 const PullRequest: NextPage = () => {
     const router = useRouter()
-    const { project, build } = router.query
+    const { project, build } = router.query;
 
     return (
         <>
