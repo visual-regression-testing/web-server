@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {readS3Files} from "../../shared/helpers/readS3Files";
 import {ListObjectsOutput} from "@aws-sdk/client-s3";
+import config from '../../config/config';
 
 async function getHandler(
     req: NextApiRequest,
@@ -9,7 +10,7 @@ async function getHandler(
     console.log('request to read images');
 
     try {
-        const files = await readS3Files('visual-regression-testing-test');
+        const files = await readS3Files(config.bucket);
         res.status(200).send(files);
     } catch(e) {
         // todo

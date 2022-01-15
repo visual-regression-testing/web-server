@@ -1,23 +1,27 @@
 import AWS from "aws-sdk";
 import {PassThrough} from "stream";
-import formidable, {FileJSON} from "formidable";
+import formidable from "formidable";
 import {NextApiRequest} from "next";
+import {ManagedUpload} from "aws-sdk/clients/s3";
 
 // todo can we do better than https://github.com/node-formidable/formidable/blob/master/examples/store-files-on-s3.js
+// todo this is not a very good implementation but it's semi functional
 export function uploadToS3(req: NextApiRequest, bucket: string): Promise<void> {
     if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
         throw new Error('AWS params not set');
     }
-    // todo can we do better than https://github.com/node-formidable/formidable/blob/master/examples/store-files-on-s3.js
+
+    const { 'x-test-name': testName, 'x-project': project, 'x-branch': branch, 'x-branch-to-compare-against': branchToCompareAgainst } = req.headers;
+
+    if (!testName || testName.includes('/' || !project || !branch || !branchToCompareAgainst)) {
+        throw new Error('Required header missing or bad variable');
+    }
+
     const s3Client = new AWS.S3();
     const acceptableMimeTypes = ['image/jpeg', 'image/png'];
 
-    const uploadStream = (file: FileJSON) => {
-        if (!file.originalFilename) {
-            throw new Error('does not have original filename');
-        }
-
-        if (file.mimetype && acceptableMimeTypes.includes(file?.mimetype)) {
+    function uploadStream (file: any) {
+        if (!file.mimetype || !acceptableMimeTypes.includes(file?.mimetype)) {
             throw new Error('File does not have correct Mime Type')
         }
 
@@ -25,11 +29,11 @@ export function uploadToS3(req: NextApiRequest, bucket: string): Promise<void> {
         s3Client.upload(
             {
                 Bucket: bucket, // todo hardcode
-                Key: file.originalFilename, // file.newFilename for generated filename without extension
+                Key: `${project}/${branch}/${branchToCompareAgainst}/${testName}.jpg`, // file.newFilename for generated filename without extension
                 Body: pass,
                 ACL: 'public-read'
             },
-            (err: any, data: any) => {
+            (err: Error | null, data: ManagedUpload.SendData) => {
                 if (err !== null) {
                     // todo
                     console.error('error occurred on push to S3');
@@ -47,16 +51,16 @@ export function uploadToS3(req: NextApiRequest, bucket: string): Promise<void> {
 
     return new Promise((resolve, reject) => {
         const form = formidable({
+            filter: function ({name, originalFilename, mimetype}) {
+                // keep only images
+                return !!mimetype && mimetype.includes("image");
+            },
             fileWriteStreamHandler: uploadStream as any,
+            maxFileSize: 5 * 1024 * 1024 // 5mb
         });
 
-        form.parse(req, (err, fields, files) => {
-            console.log('parsed', fields);
-            resolve();
-        });
-
-        // form.on('field', (fieldName, fieldValue) => {
-        //     console.log(fieldName, fieldValue);
-        // });
+        (form as any).parse(req);
+        form.on('error',  (message) => reject(message));
+        form.once('end', () => resolve());
     })
 }
