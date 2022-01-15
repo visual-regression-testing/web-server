@@ -27,6 +27,7 @@ export function uploadToS3(req: NextApiRequest, bucket: string): Promise<void> {
                 Bucket: bucket, // todo hardcode
                 Key: file.originalFilename, // file.newFilename for generated filename without extension
                 Body: pass,
+                ACL: 'public-read'
             },
             (err: any, data: any) => {
                 if (err !== null) {
