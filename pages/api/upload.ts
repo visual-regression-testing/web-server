@@ -5,6 +5,7 @@ import formidable from "formidable";
 import {PassThrough} from "stream";
 import AWS from 'aws-sdk';
 import {uploadToS3} from "../../shared/helpers/uploadToS3";
+import {readS3Files} from "../../shared/helpers/readS3Files";
 
 // do not delete
 export const config = {
