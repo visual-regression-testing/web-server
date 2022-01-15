@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {uploadToS3} from "../../shared/helpers/uploadToS3";
 
+import {validateFields} from "../../shared/helpers/validateFields";
+import configuration from '../../config/config';
+
 // do not delete
 export const config = {
   api: {
@@ -15,10 +18,11 @@ async function postHandler(
   console.log('request to upload image');
 
   try {
-    await uploadToS3(req, 'visual-regression-testing-test');
+    console.log('here to upload')
+    await uploadToS3(req, configuration.bucket);
     res.status(201).send();
   } catch(e) {
-    // todo
+    res.status(400).send();
   }
 
 
