@@ -2,7 +2,7 @@ import {NextPage} from 'next';
 import {useRouter} from 'next/router';
 import useSWR from 'swr';
 import {ListObjectsOutput} from "@aws-sdk/client-s3";
-import config from "../../../config/config";
+import config from "../../../../config/config";
 
 // @ts-ignore
 const fetcher = (...args) => fetch(...args).then(res => res.json())
@@ -11,8 +11,14 @@ const PullRequest: NextPage = () => {
 
     const bucket = config.bucket;
     const router = useRouter()
-    const { data, error } = useSWR<ListObjectsOutput>('/api/read', fetcher)
-    const { project, build } = router.query;
+    const { project, baselineBranch, branch } = router.query as { project: string, baselineBranch: string, branch: string};
+    const queryParams = new URLSearchParams({
+        project: project,
+        baselineBranch: baselineBranch,
+        branch: branch
+    });
+
+    const { data, error } = useSWR<ListObjectsOutput>(`/api/read?${queryParams}`, fetcher)
 
     if (data) {
         return (
@@ -24,7 +30,7 @@ const PullRequest: NextPage = () => {
 
     return (
         <>
-            {project} {build}
+            Loading
         </>
     )
 }
