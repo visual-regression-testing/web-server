@@ -15,15 +15,16 @@ const PullRequest: NextPage = () => {
     const queryParams = new URLSearchParams({
         project: project,
         baselineBranch: baselineBranch,
-        branch: branch
+        // branch: branch
     });
 
     const { data, error } = useSWR<ListObjectsOutput>(`/api/read?${queryParams}`, fetcher)
 
+    console.log(data);
     if (data) {
         return (
             <>
-                {data.Contents?.map(file => <img key={file.ETag} alt={file.Key} src={`https://${bucket}.s3.amazonaws.com/${file.Key}`}/>)}
+                {data.Contents?.map(file => <img key={file.ETag} alt={file.Key} width="300" src={`https://${bucket}.s3.amazonaws.com/${file.Key}`}/>)}
             </>
         )
     }

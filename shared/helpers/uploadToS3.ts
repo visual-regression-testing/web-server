@@ -3,6 +3,7 @@ import {PassThrough} from "stream";
 import formidable from "formidable";
 import {NextApiRequest} from "next";
 import {ManagedUpload} from "aws-sdk/clients/s3";
+import {s3Upload} from "./s3Upload";
 
 // todo can we do better than https://github.com/node-formidable/formidable/blob/master/examples/store-files-on-s3.js
 // todo this is not a very good implementation but it's semi functional
@@ -26,25 +27,9 @@ export function uploadToS3(req: NextApiRequest, bucket: string): Promise<void> {
         }
 
         const pass = new PassThrough();
-        s3Client.upload(
-            {
-                Bucket: bucket, // todo hardcode
-                Key: `${project}/${branchToCompareAgainst}/${branch}/${testName}.jpg`, // file.newFilename for generated filename without extension
-                Body: pass,
-                ACL: 'public-read'
-            },
-            (err: Error | null, data: ManagedUpload.SendData) => {
-                if (err !== null) {
-                    // todo
-                    console.error('error occurred on push to S3');
-                }
 
-                if (data) {
-                    // todo success!
-                    console.log('successfully uploaded', data);
-                }
-            },
-        );
+
+        s3Upload(bucket, `${project}/${branchToCompareAgainst}/${branch}/${testName}.jpg`, pass);
 
         return pass;
     };

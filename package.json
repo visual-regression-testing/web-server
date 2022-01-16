@@ -9,9 +9,13 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.46.0",
+    "@types/pngjs": "^6.0.1",
     "aws-sdk": "^2.1058.0",
+    "buffer-image-size": "^0.6.4",
     "formidable": "^3.2.1",
     "next": "12.0.8",
+    "pixelmatch": "^5.2.1",
+    "pngjs": "^6.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "swr": "^1.1.2"
