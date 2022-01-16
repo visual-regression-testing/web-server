@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {uploadToS3} from "../../shared/helpers/uploadToS3";
 
-import {validateFields} from "../../shared/helpers/validateFields";
 import configuration from '../../config/config';
 
 // do not delete

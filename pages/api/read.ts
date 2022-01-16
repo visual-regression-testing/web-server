@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {readS3Files} from "../../shared/helpers/readS3Files";
+import {s3ListObjects} from "../../shared/helpers/s3ListObjects";
 import {ListObjectsOutput} from "@aws-sdk/client-s3";
 import config from '../../config/config';
 
-const generateFolder = (project: string, baselineBranch: string, branch: string): string => {
-    return `${project}/${baselineBranch}/${branch}`;
+const generateFolder = (project: string, baselineBranch: string): string => {
+    return `${project}/${baselineBranch}`;
 }
 
 async function getHandler(
@@ -16,7 +16,7 @@ async function getHandler(
     const { project, baselineBranch, branch } = req.query as { project: string, baselineBranch: string, branch: string};
 
     try {
-        const files = await readS3Files(config.bucket, generateFolder(project, baselineBranch, branch));
+        const files = await s3ListObjects(config.bucket, generateFolder(project, baselineBranch));
         res.status(200).send(files);
     } catch(e) {
         // todo
