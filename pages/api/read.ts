@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {s3ListObjects} from "../../shared/helpers/s3ListObjects";
+import {s3ListObjectsRecursively} from "../../shared/helpers/s3ListObjects/s3ListObjectsRecursively";
 import {ListObjectsOutput} from "@aws-sdk/client-s3";
 import config from '../../config/config';
 import { query } from '../../config/db'
+import {s3ListObjectsButNotRecursively} from "../../shared/helpers/s3ListObjects/s3ListObjectsButNotRecursively";
 
 interface Test {
     // project: string;
@@ -17,8 +18,8 @@ export interface TestInformation {
     images: [string, string, string];
 }
 
-const generateFolder = (project: string, baselineBranch: string): string => {
-    return `${project}/${baselineBranch}`;
+const generateFolder = (...directories: string[]): string => {
+    return directories.map(i => i + '/').join('');
 }
 
 async function getHandler(
@@ -26,9 +27,9 @@ async function getHandler(
     res: NextApiResponse<TestInformation[] | void>
 ) {
     console.log('request to read images');
-    const { project, baselineBranch, branch } = req.query as { project: string, baselineBranch: string, branch: string};
+    const { project, baselineBranch, branch, build } = req.query as { project: string, baselineBranch: string, branch: string, build: string};
 
-    if (!project || !baselineBranch || !branch) {
+    if (!project || !baselineBranch || !branch || !build) {
         res.status(400).send();
     }
 
@@ -38,21 +39,27 @@ async function getHandler(
         // todo I have no idea if this properly sanitizes
         // todo it would be nice to make helper functions instead of just queries right here
         results = await query<Test[]>(
-            `SELECT test_name FROM builds WHERE project = ? AND baseline_branch = ? AND branch = ?`,
-            [project, baselineBranch, branch]
+            `SELECT test_name FROM builds WHERE project = ? AND baseline_branch = ? AND branch = ? AND build = ?`,
+            [project, baselineBranch, branch, build]
         )
     } catch(e) {
         // todo
     }
 
     let files: ListObjectsOutput = {};
+    let filesMerged: string[] = [];
 
     try {
-         files = await s3ListObjects(config.bucket, generateFolder(project, baselineBranch));
-         files.Contents = (files as any).Contents.filter((object: any) => object.Key.charAt(object.Key.length - 1) !== '/');
+        // get the baseline image
+        const baselineImages: ListObjectsOutput = await s3ListObjectsButNotRecursively(config.bucket, generateFolder(project, baselineBranch));
 
+        files = await s3ListObjectsRecursively(config.bucket, generateFolder(project, baselineBranch, branch, build));
+        // removes directories
+        files.Contents = (files as any).Contents.filter((object: any) => object.Key.charAt(object.Key.length - 1) !== '/');
 
-         console.log(files.Contents)
+        // map the images together
+
+        filesMerged = [...(baselineImages as any).Contents.map((object: any) => object.Key), ...(files as any).Contents.map((object: any) => object.Key)];
     } catch(e) {
         // todo
     }
@@ -60,12 +67,13 @@ async function getHandler(
 
     const testOutput: TestInformation[] = results.map(test => {
         // todo this isn't the greatest way of handling it but it might work for a while
-        const images: string[] = (files as any).Contents.filter((object: any) => object.Key.match(/$/)).map((object: any) => object.Key);
+        // todo this is limited to png
+        const re = new RegExp(`${test.test_name}\.png$`);
+        const images: string[] = filesMerged.filter(filename => filename.match(re));
 
-        console.log(images)
-        if (images.length > 3) {
-            // todo handle
-            console.error('bad')
+        if (images.length !== 3) {
+            // todo handle better
+            console.error('bad error')
             res.status(500).send();
         }
 
