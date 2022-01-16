@@ -24,7 +24,6 @@ async function postHandler(
     res.status(400).send();
   }
 
-
   res.status(400).send();
 }
 

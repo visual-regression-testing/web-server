@@ -1,7 +1,7 @@
 import {NextPage} from 'next';
 import {useRouter} from 'next/router';
 import useSWR from 'swr';
-import {ListObjectsOutput} from "@aws-sdk/client-s3";
+import {_Object, ListObjectsOutput} from "@aws-sdk/client-s3";
 import config from "../../../../config/config";
 
 // @ts-ignore
@@ -20,11 +20,28 @@ const PullRequest: NextPage = () => {
 
     const { data, error } = useSWR<ListObjectsOutput>(`/api/read?${queryParams}`, fetcher)
 
-    console.log(data);
     if (data) {
+        // todo this won't work with multiple sets of images
+        const sortedData = data?.Contents?.sort((a: any, b: any) => {
+            // the base image gets pushed all the way to the left
+            if (a.Key.match(/^[^\/]+\/[^\/]+\/([\w\-]+\.png)/)) {
+                return -1;
+            }
+
+            // the diff image gets pushed far right
+            if (a.Key.includes('diff')) {
+                return 1;
+            }
+
+            return 0;
+        });
+
         return (
             <>
-                {data.Contents?.map(file => <img key={file.ETag} alt={file.Key} width="300" src={`https://${bucket}.s3.amazonaws.com/${file.Key}`}/>)}
+                <div>
+                    <button>Approve</button>
+                </div>
+                {sortedData?.map(file => <img key={file.ETag} alt={file.Key} width="300" src={`https://${bucket}.s3.amazonaws.com/${file.Key}`}/>)}
             </>
         )
     }
