@@ -76,22 +76,26 @@ const PullRequest: NextPage = () => {
                     <button>Approve</button>
                 </div>
                 <table>
+                    <thead>
                     <tr>
                         <th>Test Name</th>
                         <th>Baseline</th>
                         <th>Diff</th>
                         <th>New</th>
                     </tr>
+                    </thead>
+                    <tbody>
                     {sortedData?.map((file, i) => {
                         return (
-                            <tr>
+                            <tr key={file.buildInformation.test_name}>
                                 <td>
                                     {file.buildInformation.test_name}
                                 </td>
-                                {file.images.map(image => <td><img key={i} alt={file.buildInformation.test_name} width="300" src={`https://${bucket}.s3.amazonaws.com/${image}`}/></td>)}
+                                {file.images.map((image, fileIndex) => <td key={fileIndex}><img alt={file.buildInformation.test_name} width="300" src={`https://${bucket}.s3.amazonaws.com/${image}`}/></td>)}
                             </tr>
                         )
                     })}
+                    </tbody>
                 </table>
 
             </>

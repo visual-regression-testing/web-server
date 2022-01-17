@@ -1,9 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {s3ListObjectsRecursively} from "../../shared/helpers/s3ListObjects/s3ListObjectsRecursively";
 import {ListObjectsOutput} from "@aws-sdk/client-s3";
 import config from '../../config/config';
 import { query } from '../../config/db'
-import {s3ListObjectsButNotRecursively} from "../../shared/helpers/s3ListObjects/s3ListObjectsButNotRecursively";
+import {s3ListObjects} from "../../shared/helpers/s3ListObjects";
 
 interface Test {
     // project: string;
@@ -39,7 +38,7 @@ async function getHandler(
         // todo I have no idea if this properly sanitizes
         // todo it would be nice to make helper functions instead of just queries right here
         results = await query<Test[]>(
-            `SELECT test_name FROM builds WHERE project = ? AND baseline_branch = ? AND branch = ? AND build = ?`,
+            `SELECT test_name FROM builds INNER JOIN projects ON builds.project_id = projects.id WHERE projects.name = ? AND baseline_branch = ? AND branch = ? AND build = ?;`,
             [project, baselineBranch, branch, build]
         )
     } catch(e) {
@@ -51,9 +50,11 @@ async function getHandler(
 
     try {
         // get the baseline image
-        const baselineImages: ListObjectsOutput = await s3ListObjectsButNotRecursively(config.bucket, generateFolder(project, baselineBranch));
+        const baselineImages: ListObjectsOutput = await s3ListObjects(config.bucket, generateFolder(project, baselineBranch), {
+            Delimiter: '/',
+        });
 
-        files = await s3ListObjectsRecursively(config.bucket, generateFolder(project, baselineBranch, branch, build));
+        files = await s3ListObjects(config.bucket, generateFolder(project, baselineBranch, branch, build));
         // removes directories
         files.Contents = (files as any).Contents.filter((object: any) => object.Key.charAt(object.Key.length - 1) !== '/');
 
