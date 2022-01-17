@@ -48,7 +48,7 @@ const PullRequest: NextPage = () => {
         build: build,
     });
 
-    const { data, error } = useSWR<TestInformation[]>(`/api/read?${queryParams}`, fetcher)
+    const { data, error } = useSWR<TestInformation[]>(`/api/read?${queryParams}`, fetcher);
 
     if (data) {
 
