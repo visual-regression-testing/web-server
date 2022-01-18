@@ -13,7 +13,10 @@ app.prepare().then(() => {
         const parsedUrl = parse(req.url, true)
         const { pathname, query } = parsedUrl
 
-        console.log(pathname, query)
+        if (!pathname.includes('/_next/static/')) {
+            console.log(pathname, query, parsedUrl)
+        }
+
         handle(req, res, parsedUrl)
     }).listen(3000, (err) => {
         if (err) throw err
