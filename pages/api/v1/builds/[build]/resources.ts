@@ -9,7 +9,7 @@ async function getHandler(
 
     const t = JSON.parse(req.body);
 
-    fs.writeFileSync('resources.log', req.body);
+    fs.writeFileSync('./tmp/logs/resources.log', req.body);
 
 
     res.status(201).send();

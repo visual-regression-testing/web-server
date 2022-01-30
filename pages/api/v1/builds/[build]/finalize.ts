@@ -5,7 +5,7 @@ async function getHandler(
     req: NextApiRequest,
     res: NextApiResponse< void>
 ) {
-    fs.writeFileSync('finalize.log', req.body);
+    fs.writeFileSync('./tmp/logs/build-finalize.log', req.body);
     res.status(201).send();
 }
 

@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import * as fs from "fs";
 
 interface CreateBuildInput {
     data: {
@@ -70,15 +71,17 @@ async function getHandler(
     // it returns it and has additional parameters
     const parsedBody: CreateBuildInput = JSON.parse(req.body);
 
+    fs.writeFileSync('./tmp/logs/build.log', req.body);
+
     // todo proper output values, these were taken from Percy and are somewhat valid
 
     const newBodyResponse: CreatedBuildOutput = {
         data: {
             ...parsedBody.data, // todo correct?
-            id: 123, // todo generated ID
+            id: 123, // todo endpoint?
             attributes: {
                 branch: 'master',
-                'build-number': 118,
+                'build-number': 118, // todo generate id
                 partial: false,
                 // todo this the url of the build that's output to the UI
                 'web-url': 'https://percy.io/617adf68/admin-ui-test/builds/15072298',

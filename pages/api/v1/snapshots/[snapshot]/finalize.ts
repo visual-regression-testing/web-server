@@ -1,15 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import * as fs from "fs";
 
 async function getHandler(
     req: NextApiRequest,
     res: NextApiResponse<void>
 ) {
-    console.log('snapshots finalized called')
-    console.log(req.body, req.query);
     // it returns it and has additional parameters
     const parsedBody = JSON.parse(req.body);
 
-    console.log('^^^^', parsedBody)
+    fs.writeFileSync('./tmp/logs/snapshot-finalize.log', req.body);
 
     const newBodyResponse = Object.assign({}, parsedBody, {
         data: {

@@ -112,10 +112,7 @@ async function getHandler(
     req: NextApiRequest,
     res: NextApiResponse<CreateSnapshotOutput2>
 ) {
-
-    console.log('builds [build] snapshots called', req.url);
-
-    fs.writeFileSync('snapshots.log', req.body)
+    fs.writeFileSync('tmp/logs/build-snapshots.log', req.body)
 
     // it returns it and has additional parameters
     const parsedBody: CreateSnapshotRequest = JSON.parse(req.body);
