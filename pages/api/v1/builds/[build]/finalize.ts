@@ -1,12 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import fs from "fs";
 
 async function getHandler(
     req: NextApiRequest,
     res: NextApiResponse< void>
 ) {
-
-    console.log('builds [build] finalize called');
-    console.log(req.body, req.query);
+    fs.writeFileSync('finalize.log', req.body);
     res.status(201).send();
 }
 

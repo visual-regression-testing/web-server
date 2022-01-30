@@ -1,29 +1,41 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
 
-interface Resource {
-    type: string;
-    id: string;
-    attributes: {
-        'resource-url': string;
-        'is-root': boolean;
-        'mimetype': string;
-    };
-}
-
-interface CreateSnapshot {
-    data: {
-        type: string; // 'snapshots',
-        attributes: {
-            name: string | null; // name || null,
-            widths: unknown | null; // widths || null,  todo pretty sure it's an array of number
-            'minimum-height': number | null; // minHeight || null,
-            'enable-javascript': boolean | null; // enableJavaScript || null
+interface CreateSnapshotRequest {
+    "data": {
+        "type": "snapshots",
+        "attributes": {
+            "name": "Snapshot 1",
+            "widths": [
+                375,
+                1280
+            ],
+            "minimum-height": 1024,
+            "enable-javascript": null
         },
-        relationships: {
-            resources: {
-                data: Resource[];
-            };
+        "relationships": {
+            "resources": {
+                "data": [
+                    {
+                        "type": "resources",
+                        "id": "1500a3af7cb0f90700bd4da0e6dc57420e8e7717d2575bc3e69a84530d1332cb",
+                        "attributes": {
+                            "resource-url": "http://localhost:3000/",
+                            "is-root": true,
+                            "mimetype": "text/html"
+                        }
+                    },
+                    {
+                        "type": "resources",
+                        "id": "393ff5f609a837205f4f1551a333993c95dfe3e18d0f621f97b7555bc9e0d900",
+                        "attributes": {
+                            "resource-url": "/percy.1643583104917.log",
+                            "is-root": null,
+                            "mimetype": "text/plain"
+                        }
+                    }
+                ]
+            }
         }
     }
 }
@@ -33,7 +45,7 @@ interface CreateSnapshot {
 interface CreateSnapshotOutput2 {
     "data": {
         "type": "snapshots",
-        "id": "866690723" | "123", // build id
+        "id": "123", // build id I believe
         "attributes": {
             "name": "Snapshot 1",
             "review-state": null,
@@ -50,7 +62,7 @@ interface CreateSnapshotOutput2 {
             "build": {
                 "data": {
                     "type": "builds",
-                    "id": "15336003"
+                    "id": "15336003" // is this build ID?
                 }
             },
             "latest-changed-ancestor": {
@@ -79,7 +91,7 @@ interface CreateSnapshotOutput2 {
                 "data": [
                     {
                         "type": "resources",
-                        "id": "ec905d26fb30ef0cffdc5f5daec42a930efdbcb715eb9d793441896d719e69be" // resource id to get HTML
+                        "id": "1500a3af7cb0f90700bd4da0e6dc57420e8e7717d2575bc3e69a84530d1332cb" // resource id to get HTML
                     }
                 ]
             }
@@ -102,14 +114,14 @@ async function getHandler(
 ) {
 
     console.log('builds [build] snapshots called', req.url);
-    // console.log(req.body)
+
+    fs.writeFileSync('snapshots.log', req.body)
 
     // it returns it and has additional parameters
-    const parsedBody: CreateSnapshot = JSON.parse(req.body);
-
-    fs.writeFileSync('test2.log', req.body);
+    const parsedBody: CreateSnapshotRequest = JSON.parse(req.body);
 
     // test code
+    // todo this is pretty hacky still
     const newBodyResponse: CreateSnapshotOutput2 =  {
         "data": {
             "type": "snapshots",
@@ -159,7 +171,7 @@ async function getHandler(
                     "data": [
                         {
                             "type": "resources",
-                            "id": "ec905d26fb30ef0cffdc5f5daec42a930efdbcb715eb9d793441896d719e69be"
+                            "id": parsedBody.data.relationships.resources.data[0].id
                         }
                     ]
                 }
@@ -168,7 +180,7 @@ async function getHandler(
         "included": [
             {
                 "type": "resources",
-                "id": "5bb1c26218c6838a56bc1f0c99a1a5c2977ff2f013e248ef77b9e7267ecb1c54",
+                "id": "5bb1c26218c6838a56bc1f0c99a1a5c2977ff2f013e248ef77b9e7267ecb1c54", // todo is this the other resource?
                 "links": {
                     "self": "/api/v1/resources/5bb1c26218c6838a56bc1f0c99a1a5c2977ff2f013e248ef77b9e7267ecb1c54"
                 }
