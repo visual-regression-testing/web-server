@@ -1,9 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
+import {createBuild} from "../../createBuild";
+import {getPercyToken} from "../../../../shared/helpers/getPercyToken";
+import {checkAuth} from "../../../../shared/helpers/authorization/checkAuth";
 
 interface CreateBuildInput {
     data: {
-        type: string; // 'builds',
+        type: 'builds'; // 'builds',
         attributes: {
             branch: string; // this.env.git.branch,
             'target-branch': string; // this.env.target.branch,
@@ -27,7 +30,7 @@ interface CreateBuildInput {
 // todo not right
 interface CreatedBuildOutput {
     data: {
-        type: string; // todo is this returned in PErcy as well???
+        type: 'builds'; // todo is this returned in PErcy as well???
         id: number; // buildNumber
         attributes: {
              branch: string; // 'master',
@@ -72,6 +75,17 @@ async function getHandler(
     const parsedBody: CreateBuildInput = JSON.parse(req.body);
 
     fs.writeFileSync('./tmp/logs/build.log', req.body);
+
+    // todo check for authorization header, although the Percy CLI checks for us
+    const owner = checkAuth(req.headers.authorization as string);
+
+    const response = await createBuild({
+        branch: parsedBody.data.attributes.branch,
+        pullRequestNumber: parsedBody.data.attributes['pull-request-number'],
+        targetBranch: parsedBody.data.attributes["target-branch"]
+    });
+
+    console.log(response);
 
     // todo proper output values, these were taken from Percy and are somewhat valid
 
