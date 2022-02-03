@@ -37,6 +37,10 @@ export const getServerSideProps: GetServerSideProps<any> = async (context) => {
     return { props: { project, baselineBranch, branch, build } };
 };
 
+/**
+ * @deprecated
+ * @constructor
+ */
 const PullRequest: NextPage = () => {
     const bucket = config.bucket;
     const router = useRouter();

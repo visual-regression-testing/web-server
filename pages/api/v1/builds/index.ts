@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
-import {createBuild} from "../../createBuild";
-import {getPercyToken} from "../../../../shared/helpers/getPercyToken";
 import {checkAuth} from "../../../../shared/helpers/authorization/checkAuth";
+import {createBuildByPercyToken} from "../../../../shared/helpers/createBuildByPercyToken";
+import {getProjectByPercytToken} from "../../../../shared/helpers/getProjectByPercyToken";
+import {Project} from "../../../../shared/helpers/listProjectsOfUser";
 
 interface CreateBuildInput {
     data: {
@@ -77,15 +78,18 @@ async function getHandler(
     fs.writeFileSync('./tmp/logs/build.log', req.body);
 
     // todo check for authorization header, although the Percy CLI checks for us
-    const owner = checkAuth(req.headers.authorization as string);
+    const percyToken = checkAuth(req.headers.authorization as string);
 
-    const response = await createBuild({
-        branch: parsedBody.data.attributes.branch,
-        pullRequestNumber: parsedBody.data.attributes['pull-request-number'],
-        targetBranch: parsedBody.data.attributes["target-branch"]
-    });
+    const build: [{  id: number }] = await createBuildByPercyToken(percyToken);
+    const project: [Project] | undefined = await getProjectByPercytToken(percyToken);
 
-    console.log(response);
+    // const response = await createBuildByPercyToken({
+    //     branch: parsedBody.data.attributes.branch,
+    //     pullRequestNumber: parsedBody.data.attributes['pull-request-number'],
+    //     targetBranch: parsedBody.data.attributes["target-branch"]
+    // });
+    //
+    // console.log(response);
 
     // todo proper output values, these were taken from Percy and are somewhat valid
 
@@ -95,10 +99,11 @@ async function getHandler(
             id: 123, // todo endpoint?
             attributes: {
                 branch: 'master',
-                'build-number': 118, // todo generate id
+                'build-number': build[0].id, // todo generate id
                 partial: false,
                 // todo this the url of the build that's output to the UI
-                'web-url': 'https://percy.io/617adf68/admin-ui-test/builds/15072298',
+                // todo hardcoded to localhost
+                'web-url': `http://localhost:3000/project/${(project as [Project])[0].id}/build/${build[0].id}`,
                 'commit-html-url': null,
                 'branch-html-url': null,
                 'pull-request-html-url': null,

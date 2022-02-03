@@ -5,9 +5,6 @@ async function getHandler(
     req: NextApiRequest,
     res: NextApiResponse< void>
 ) {
-    console.log('####### handle request')
-
-    const t = JSON.parse(req.body);
 
     fs.writeFileSync('./tmp/logs/resources.log', req.body);
 

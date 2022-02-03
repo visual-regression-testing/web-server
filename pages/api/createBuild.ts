@@ -7,6 +7,12 @@ export interface QueryResultBuild {
     build: number;
 }
 
+/**
+ * @deprecated
+ * @param branch
+ * @param pullRequestNumber
+ * @param targetBranch
+ */
 export const createBuild = async({ branch, pullRequestNumber, targetBranch, }: any) => {
     return query(`INSERT INTO builds (baseline_branch, branch, test_name) VALUES (? , ?, ?)`,
         [targetBranch, branch, 'tbd']);
