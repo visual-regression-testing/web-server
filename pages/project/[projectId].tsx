@@ -1,6 +1,9 @@
 import {useSession, getSession} from "next-auth/react"
 import {NextPage} from "next";
 import {useRouter} from "next/router";
+import useSWR from "swr";
+import {Project} from "../../shared/helpers/listProjectsOfUser";
+import {Build} from "../../shared/helpers/listBuildsOfProject";
 
 export async function getServerSideProps(context: any) {
     let session = await getSession(context)
@@ -27,22 +30,21 @@ const Component: NextPage = ({ props }: any) => {
 
     if (session) {
         const { projectId } = router.query
-        return <div>{projectId}</div>
-        // const queryParams = new URLSearchParams({
-        //     email: session.user?.email as string
-        // });
-        //
-        // const { data, error } = useSWR<any>(`/api/projects?${queryParams}`, fetcher);
-        //
-        // if (data) {
-        //     return (
-        //         <div>
-        //             <table>
-        //                 {data.map((project: Project) => <tr key={project.id}><td><a href={`/project/${project.id}`}>{project.name}</a></td></tr>)}
-        //             </table>
-        //         </div>
-        //     )
-        // }
+        const queryParams = new URLSearchParams({
+            id: projectId as string,
+        });
+
+        const { data, error } = useSWR<{project: Project, builds: Build[]}>(`/api/project?${queryParams}`, fetcher);
+
+        if (data) {
+            return (
+                <div>
+                    <table>
+                        {data.builds.map((build: Build) => <tr key={build.id}><td><a href={`/project/${projectId}/build/${build.id}`}>{build.id}</a></td></tr>)}
+                    </table>
+                </div>
+            )
+        }
     }
 
     return null;
