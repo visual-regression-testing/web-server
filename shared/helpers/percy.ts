@@ -8,7 +8,7 @@ import Percy from "@percy/core";
 
     // todo cannot change this yet
     const test =
-        `<html><head></head><body>works3</body></html>`
+        `<html><head></head><body>hello world</body></html>`
 
     // https://docs.percy.io/docs/build-your-own-sdk
     await percy.snapshot({

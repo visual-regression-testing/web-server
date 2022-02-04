@@ -5,12 +5,9 @@ interface CreateSnapshotRequest {
     "data": {
         "type": "snapshots",
         "attributes": {
-            "name": "Snapshot 1",
-            "widths": [
-                375,
-                1280
-            ],
-            "minimum-height": 1024,
+            "name": string, // "Snapshot 1"
+            "widths": [number, number] // [375,1280],
+            "minimum-height": number // 1024,
             "enable-javascript": null
         },
         "relationships": {
