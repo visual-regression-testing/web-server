@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
+import {createSnapshot} from "../../../../../shared/helpers/createSnapshot";
 
 interface CreateSnapshotRequest {
     "data": {
@@ -107,12 +108,18 @@ interface CreateSnapshotOutput2 {
 
 async function getHandler(
     req: NextApiRequest,
-    res: NextApiResponse<CreateSnapshotOutput2>
+    res: NextApiResponse<CreateSnapshotOutput2 | undefined>
 ) {
     fs.writeFileSync('tmp/logs/build-snapshots.log', req.body)
 
     // it returns it and has additional parameters
     const parsedBody: CreateSnapshotRequest = JSON.parse(req.body);
+
+    try {
+        await createSnapshot(req.body);
+    } catch(e) {
+        res.status(400).send(undefined);
+    }
 
     // test code
     // todo this is pretty hacky still
@@ -187,7 +194,7 @@ async function getHandler(
 
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<CreateSnapshotOutput2>
+    res: NextApiResponse<CreateSnapshotOutput2 | undefined>
 ) {
     return getHandler(req, res);
 };

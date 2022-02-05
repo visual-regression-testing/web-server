@@ -8,6 +8,7 @@ export async function createBuildByPercyToken(percyToken: string): Promise<any> 
             `SELECT id from projects WHERE percy_token = ? LIMIT 1`, [percyToken]);
     } catch(e) {
         // todo
+        throw new Error('could not query for project');
     }
 
     if (projectId[0].id) {
@@ -23,6 +24,6 @@ export async function createBuildByPercyToken(percyToken: string): Promise<any> 
             // todo
         }
     } else {
-        throw new Error('could not create build')
+        throw new Error('could not create build');
     }
 }
