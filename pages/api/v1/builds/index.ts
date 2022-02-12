@@ -72,7 +72,7 @@ interface Error {
     message: string;
 }
 
-async function getHandler(
+async function postHandler(
     req: NextApiRequest,
     res: NextApiResponse<CreatedBuildOutput | Error>
 ) {
@@ -151,5 +151,9 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<CreatedBuildOutput | Error>
 ) {
-    return getHandler(req, res);
+    if (req.method === 'POST') {
+        return postHandler(req, res);
+    }
+
+    res.status(405);
 };

@@ -107,7 +107,7 @@ interface CreateSnapshotOutput2 {
     ]
 }
 
-async function getHandler(
+async function postHandler(
     req: NextApiRequest,
     res: NextApiResponse<CreateSnapshotOutput2 | undefined>
 ) {
@@ -199,5 +199,9 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<CreateSnapshotOutput2 | undefined>
 ) {
-    return getHandler(req, res);
+    if (req.method === 'POST') {
+        return postHandler(req, res);
+    }
+
+    res.status(405);
 };

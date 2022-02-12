@@ -15,7 +15,7 @@ interface ResourceBody {
     }
 }
 
-async function getHandler(
+async function postHandler(
     req: NextApiRequest,
     res: NextApiResponse< void>
 ) {
@@ -34,5 +34,9 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse< void>
 ) {
-    return getHandler(req, res);
+    if (req.method === 'POST') {
+        return postHandler(req, res);    
+    }
+    
+    res.status(405);
 };
