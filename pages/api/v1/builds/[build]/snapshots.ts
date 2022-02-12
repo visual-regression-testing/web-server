@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
 import {createSnapshot} from "../../../../../shared/helpers/createSnapshot";
 import {InsertResponse} from "../../../../../config/db";
+import {listMissingResources} from "../../../../../shared/helpers/listMissingResources";
 
 interface CreateSnapshotRequest {
     "data": {
@@ -37,6 +38,11 @@ interface CreateSnapshotRequest {
             }
         }
     }
+}
+
+interface MissingResource {
+    id: string;
+    type: 'resources';
 }
 
 // todo not right, it includes CreateSnapshot - how to have overlapping interfaces
@@ -87,12 +93,7 @@ interface CreateSnapshotOutput2 {
                     "self": string;
                     "related": string;
                 },
-                "data": [
-                    {
-                        "type": "resources",
-                        "id": "1500a3af7cb0f90700bd4da0e6dc57420e8e7717d2575bc3e69a84530d1332cb" // resource id to get HTML
-                    }
-                ]
+                "data": MissingResource[];
             }
         }
     },
@@ -121,6 +122,23 @@ async function postHandler(
         const snapshotCreatedResponse: InsertResponse = await createSnapshot(req.body);
         createdSnapshotId = snapshotCreatedResponse.insertId;
     } catch(e) {
+        res.status(400).send(undefined);
+    }
+
+
+    const searchForMissingResources: string[] = parsedBody.data.relationships.resources.data.map(i => i.id);
+    let missingResources: MissingResource[] = [];
+
+    try {
+        const list = await listMissingResources(searchForMissingResources);
+        missingResources = list.map(missingResourceId => {
+            return {
+                type: 'resources',
+                id: missingResourceId,
+            }
+        });
+    } catch(e) {
+        // todo better error handling
         res.status(400).send(undefined);
     }
 
@@ -172,12 +190,7 @@ async function postHandler(
                         "self": `/api/v1/snapshots/${createdSnapshotId}/relationships/missing-resources`,
                         "related": `/api/v1/snapshots/${createdSnapshotId}/missing-resources`
                     },
-                    "data": [
-                        {
-                            "type": "resources",
-                            "id": parsedBody.data.relationships.resources.data[0].id
-                        }
-                    ]
+                    "data": missingResources
                 }
             }
         },

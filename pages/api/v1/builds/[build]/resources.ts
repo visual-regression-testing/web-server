@@ -26,7 +26,7 @@ async function postHandler(
         await createResource(parsedBody.data.id, parsedBody.data.attributes["base64-content"]);
         res.status(201).send();
     } catch(e) {
-        res.status(401).send();
+        res.status(400).send();
     }
 }
 
@@ -35,8 +35,8 @@ export default async function handler(
     res: NextApiResponse< void>
 ) {
     if (req.method === 'POST') {
-        return postHandler(req, res);    
+        return postHandler(req, res);
     }
-    
+
     res.status(405);
 };
