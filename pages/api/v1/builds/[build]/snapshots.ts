@@ -99,9 +99,9 @@ interface CreateSnapshotOutput2 {
     "included": [
         {
             "type": "resources",
-            "id": "5bb1c26218c6838a56bc1f0c99a1a5c2977ff2f013e248ef77b9e7267ecb1c54",
+            "id": string;
             "links": {
-                "self": "/api/v1/resources/5bb1c26218c6838a56bc1f0c99a1a5c2977ff2f013e248ef77b9e7267ecb1c54"
+                "self": string;
             }
         }
     ]
@@ -184,9 +184,9 @@ async function getHandler(
         "included": [
             {
                 "type": "resources",
-                "id": "5bb1c26218c6838a56bc1f0c99a1a5c2977ff2f013e248ef77b9e7267ecb1c54", // todo is this the other resource?
+                "id": parsedBody.data.relationships.resources.data[0].id,
                 "links": {
-                    "self": "/api/v1/resources/5bb1c26218c6838a56bc1f0c99a1a5c2977ff2f013e248ef77b9e7267ecb1c54"
+                    "self": `/api/v1/resources/${parsedBody.data.relationships.resources.data[0].id}`
                 }
             }
         ]
