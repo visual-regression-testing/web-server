@@ -1,5 +1,5 @@
 {
-  "name": "vr-testing",
+  "name": "visual-regression-testing",
   "private": true,
   "scripts": {
     "dev": "next dev",

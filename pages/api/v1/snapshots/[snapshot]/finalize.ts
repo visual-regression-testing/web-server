@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
+import {useRouter} from "next/router";
 
 async function getHandler(
     req: NextApiRequest,
@@ -7,13 +8,15 @@ async function getHandler(
 ) {
     // it returns it and has additional parameters
     const parsedBody = JSON.parse(req.body);
+    const router = useRouter();
+    const {snapshot} = router.query;
 
     fs.writeFileSync('./tmp/logs/snapshot-finalize.log', req.body);
 
     const newBodyResponse = Object.assign({}, parsedBody, {
         data: {
             ...parsedBody.data,
-            id: '123', // todo generated ID
+            id: snapshot, // todo not tested
         }
     })
 

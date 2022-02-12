@@ -19,7 +19,7 @@ async function getHandler(
     req: NextApiRequest,
     res: NextApiResponse< void>
 ) {
-    fs.writeFileSync('./tmp/logs/resources.log', req.body);
+    fs.writeFileSync(`./tmp/logs/resources-${new Date().getTime()}.log`, req.body);
     const parsedBody: ResourceBody = JSON.parse(req.body);
 
     try {

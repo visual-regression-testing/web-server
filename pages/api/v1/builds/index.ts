@@ -68,17 +68,28 @@ interface CreatedBuildOutput {
     }
 }
 
+interface Error {
+    message: string;
+}
+
 async function getHandler(
     req: NextApiRequest,
-    res: NextApiResponse<CreatedBuildOutput>
+    res: NextApiResponse<CreatedBuildOutput | Error>
 ) {
+    // todo check for authorization header, although the Percy CLI checks for us
+    const percyToken = checkAuth(req.headers.authorization as string);
+
+    // todo common error handling
+    if (!percyToken) {
+        res.status(401).send({
+            message: 'No authorization token',
+        })
+    }
+
     // it returns it and has additional parameters
     const parsedBody: CreateBuildInput = JSON.parse(req.body);
 
     fs.writeFileSync('./tmp/logs/build.log', req.body);
-
-    // todo check for authorization header, although the Percy CLI checks for us
-    const percyToken = checkAuth(req.headers.authorization as string);
 
     const build: [{  id: number }] = await createBuildByPercyToken(percyToken);
     const project: [Project] | undefined = await getProjectByPercytToken(percyToken);
@@ -96,7 +107,7 @@ async function getHandler(
     const newBodyResponse: CreatedBuildOutput = {
         data: {
             ...parsedBody.data, // todo correct?
-            id: 123, // todo endpoint?
+            id: build[0].id, // this is the endpoint id, because we use the build number right now as the same thing, we'll use it here too
             attributes: {
                 branch: 'master',
                 'build-number': build[0].id, // todo generate id
@@ -138,7 +149,7 @@ async function getHandler(
 
 export default async function handler(
     req: NextApiRequest,
-    res: NextApiResponse<CreatedBuildOutput>
+    res: NextApiResponse<CreatedBuildOutput | Error>
 ) {
     return getHandler(req, res);
 };

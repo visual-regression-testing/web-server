@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
 import {createSnapshot} from "../../../../../shared/helpers/createSnapshot";
+import {InsertResponse} from "../../../../../config/db";
 
 interface CreateSnapshotRequest {
     "data": {
         "type": "snapshots",
         "attributes": {
-            "name": string, // "Snapshot 1"
+            "name": string, // "Snapshot 1" // is the test name
             "widths": [number, number] // [375,1280],
             "minimum-height": number // 1024,
             "enable-javascript": null
@@ -43,9 +44,9 @@ interface CreateSnapshotRequest {
 interface CreateSnapshotOutput2 {
     "data": {
         "type": "snapshots",
-        "id": "123", // build id I believe
+        "id": number,
         "attributes": {
-            "name": "Snapshot 1",
+            "name": string;
             "review-state": null,
             "review-state-reason": null,
             "fingerprint": null,
@@ -54,7 +55,7 @@ interface CreateSnapshotOutput2 {
             "enable-javascript": false
         },
         "links": {
-            "self": "/api/v1/snapshots/866690723"
+            "self": string;
         },
         "relationships": {
             "build": {
@@ -65,7 +66,7 @@ interface CreateSnapshotOutput2 {
             },
             "latest-changed-ancestor": {
                 "links": {
-                    "related": "/api/v1/snapshots/866690723/latest-changed-ancestor"
+                    "related": string;
                 }
             },
             "screenshots": {},
@@ -83,8 +84,8 @@ interface CreateSnapshotOutput2 {
             },
             "missing-resources": {
                 "links": {
-                    "self": "/api/v1/snapshots/866690723/relationships/missing-resources",
-                    "related": "/api/v1/snapshots/866690723/missing-resources"
+                    "self": string;
+                    "related": string;
                 },
                 "data": [
                     {
@@ -114,9 +115,11 @@ async function getHandler(
 
     // it returns it and has additional parameters
     const parsedBody: CreateSnapshotRequest = JSON.parse(req.body);
+    let createdSnapshotId: number = 0;
 
     try {
-        await createSnapshot(req.body);
+        const snapshotCreatedResponse: InsertResponse = await createSnapshot(req.body);
+        createdSnapshotId = snapshotCreatedResponse.insertId;
     } catch(e) {
         res.status(400).send(undefined);
     }
@@ -126,9 +129,9 @@ async function getHandler(
     const newBodyResponse: CreateSnapshotOutput2 =  {
         "data": {
             "type": "snapshots",
-            "id": "123", // hack // todo
+            "id": createdSnapshotId,
             "attributes": {
-                "name": "Snapshot 1",
+                "name": parsedBody.data.attributes.name,
                 "review-state": null,
                 "review-state-reason": null,
                 "fingerprint": null,
@@ -137,7 +140,7 @@ async function getHandler(
                 "enable-javascript": false
             },
             "links": {
-                "self": "/api/v1/snapshots/866690723"
+                "self": `/api/v1/snapshots/${createdSnapshotId}`
             },
             "relationships": {
                 "build": {
@@ -148,7 +151,7 @@ async function getHandler(
                 },
                 "latest-changed-ancestor": {
                     "links": {
-                        "related": "/api/v1/snapshots/866690723/latest-changed-ancestor"
+                        "related": `/api/v1/snapshots/${createdSnapshotId}/latest-changed-ancestor`
                     }
                 },
                 "screenshots": {},
@@ -166,8 +169,8 @@ async function getHandler(
                 },
                 "missing-resources": {
                     "links": {
-                        "self": "/api/v1/snapshots/866690723/relationships/missing-resources",
-                        "related": "/api/v1/snapshots/866690723/missing-resources"
+                        "self": `/api/v1/snapshots/${createdSnapshotId}/relationships/missing-resources`,
+                        "related": `/api/v1/snapshots/${createdSnapshotId}/missing-resources`
                     },
                     "data": [
                         {

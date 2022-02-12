@@ -10,6 +10,17 @@ export const db = mysql({
     },
 });
 
+export interface InsertResponse {
+    fieldCount: number; // 0
+    affectedRows: number; // 1
+    insertId: number; // 18
+    serverStatus: number; // 2
+    warningCount: number; // 0
+    message: string; // ''
+    protocol41: boolean; // true
+    changedRows: number; // 0
+}
+
 export async function query<T>(
     q: string,
     values: (string | number)[] | string | number = []
