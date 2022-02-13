@@ -1,5 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import {query} from "../../config/db";
+import {query} from "@visual-regression-shared/config/db";
 
 export interface QueryResultBuild {
     baseline_branch: string;

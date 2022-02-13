@@ -2,8 +2,8 @@ import {useSession, getSession} from "next-auth/react"
 import {NextPage} from "next";
 import {useRouter} from "next/router";
 import useSWR from "swr";
-import {Project} from "../../shared/helpers/listProjectsOfUser";
-import {Build} from "../../shared/helpers/listBuildsOfProject";
+import {Project} from "@visual-regression-shared/shared/helpers/listProjectsOfUser";
+import {Build} from "@visual-regression-shared/shared/helpers/listBuildsOfProject";
 
 export async function getServerSideProps(context: any) {
     let session = await getSession(context)

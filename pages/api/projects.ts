@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {listProjectsOfUser, Project} from "../../shared/helpers/listProjectsOfUser";
+import {listProjectsOfUser, Project} from "@visual-regression-shared/shared/helpers/listProjectsOfUser";
 
 async function getHandler(
     req: NextApiRequest,

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { Project} from "../../shared/helpers/listProjectsOfUser";
-import {Build, listBuildsOfProject} from "../../shared/helpers/listBuildsOfProject";
-import {getProjectyId} from "../../shared/helpers/getProjectById";
+import { Project} from "@visual-regression-shared/shared/helpers/listProjectsOfUser";
+import {Build, listBuildsOfProject} from "@visual-regression-shared/shared/helpers/listBuildsOfProject";
+import {getProjectyId} from "@visual-regression-shared/shared/helpers/getProjectById";
 
 async function getHandler(
     req: NextApiRequest,

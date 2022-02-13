@@ -1,0 +1,4 @@
+[submodule "visual-regression-shared"]
+	path = visual-regression-shared
+	url = https://github.com/mikedidomizio/visual-regression-shared
+	branch = master

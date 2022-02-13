@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import {uploadToS3} from "../../shared/helpers/uploadToS3";
+import {uploadToS3} from "@visual-regression-shared/shared/helpers/uploadToS3";
 
-import configuration from '../../config/config';
+import configuration from '@visual-regression-shared/config/config';
 
 // do not delete
 export const config = {

@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
-import {checkAuth} from "../../../../shared/helpers/authorization/checkAuth";
-import {createBuildByPercyToken} from "../../../../shared/helpers/createBuildByPercyToken";
-import {getProjectByPercytToken} from "../../../../shared/helpers/getProjectByPercyToken";
-import {Project} from "../../../../shared/helpers/listProjectsOfUser";
+import {checkAuth} from "@visual-regression-shared/shared/helpers/authorization/checkAuth";
+import {createBuildByPercyToken} from "@visual-regression-shared/shared/helpers/createBuildByPercyToken";
+import {getProjectByPercytToken} from "@visual-regression-shared/shared/helpers/getProjectByPercyToken";
+import {Project} from "@visual-regression-shared/shared/helpers/listProjectsOfUser";
 
 interface CreateBuildInput {
     data: {

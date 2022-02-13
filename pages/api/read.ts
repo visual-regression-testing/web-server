@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {ListObjectsOutput} from "@aws-sdk/client-s3";
-import config from '../../config/config';
-import { query } from '../../config/db'
-import {s3ListObjects} from "../../shared/helpers/s3ListObjects";
+import config from '@visual-regression-shared/config/config';
+import { query } from '@visual-regression-shared/config/db'
+import {s3ListObjects} from "@visual-regression-shared/shared/helpers/s3ListObjects";
 
 interface Test {
     // project: string;

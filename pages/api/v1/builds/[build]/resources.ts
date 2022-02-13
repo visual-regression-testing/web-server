@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import fs from "fs";
-import {createResource} from "../../../../../shared/helpers/createResource";
+import {createResource} from "@visual-regression-shared/shared/helpers/createResource";
 
 interface ResourceBody {
     "data": {

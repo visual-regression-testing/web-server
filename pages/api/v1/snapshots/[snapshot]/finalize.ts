@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
-import {useRouter} from "next/router";
 
 async function getHandler(
     req: NextApiRequest,

@@ -2,7 +2,7 @@ import {GetServerSideProps, NextPage} from 'next';
 import {useRouter} from 'next/router';
 import useSWR from 'swr';
 import {ListObjectsOutput} from "@aws-sdk/client-s3";
-import config from "../../../../../config/config";
+import config from "@visual-regression-shared/config/config";
 import {TestInformation} from "../../../../api/read";
 
 // @ts-ignore

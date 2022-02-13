@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
-import {createSnapshot} from "../../../../../shared/helpers/createSnapshot";
-import {InsertResponse} from "../../../../../config/db";
-import {listMissingResources} from "../../../../../shared/helpers/listMissingResources";
+import {createSnapshot} from "@visual-regression-shared/shared/helpers/createSnapshot";
+import {InsertResponse} from "@visual-regression-shared/config/db";
+import {listMissingResources} from "@visual-regression-shared/shared/helpers/listMissingResources";
 
 interface CreateSnapshotRequest {
     "data": {
