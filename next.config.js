@@ -3,8 +3,8 @@ const nextConfig = {
   reactStrictMode: true,
 }
 
-if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
-  throw new Error('Required GitHub provider credentials not set');
+if (process.env.GITHUB_ID && process.env.GITHUB_SECRET) {
+  console.log('GitHub provider credentials set');
 }
 
 module.exports = nextConfig
