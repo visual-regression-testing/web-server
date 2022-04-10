@@ -27,14 +27,13 @@ const fetcher = (...args) => fetch(...args).then(res => res.json());
 const Component: NextPage = ({ props }: any) => {
     const { data: session } = useSession();
     const router = useRouter()
+    const { projectId } = router.query
+    const queryParams = new URLSearchParams({
+        id: projectId as string,
+    });
+    const { data, error } = useSWR<{project: Project, builds: Build[]}>(`/api/project?${queryParams}`, fetcher);
 
     if (session) {
-        const { projectId } = router.query
-        const queryParams = new URLSearchParams({
-            id: projectId as string,
-        });
-
-        const { data, error } = useSWR<{project: Project, builds: Build[]}>(`/api/project?${queryParams}`, fetcher);
 
         if (data) {
             return (
