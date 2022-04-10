@@ -24,23 +24,20 @@ const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 const Component: NextPage = ({ props }: any) => {
     const { data: session } = useSession();
+    const queryParams = new URLSearchParams({
+        email: session?.user?.email as string,
+    });
 
-    if (session) {
-        const queryParams = new URLSearchParams({
-            email: session.user?.email as string
-        });
+    const { data, error } = useSWR<any>(`/api/projects?${queryParams}`, fetcher);
 
-        const { data, error } = useSWR<any>(`/api/projects?${queryParams}`, fetcher);
-
-        if (data) {
-            return (
-                <div>
-                    <table>
-                        {data.map((project: Project) => <tr key={project.id}><td><a href={`/project/${project.id}`}>{project.name}</a></td></tr>)}
-                    </table>
-                </div>
-            )
-        }
+    if (data) {
+        return (
+            <div>
+                <table>
+                    {data.map((project: Project) => <tr key={project.id}><td><a href={`/project/${project.id}`}>{project.name}</a></td></tr>)}
+                </table>
+            </div>
+        )
     }
 
     return null;
