@@ -15,7 +15,7 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@visual-regression-shared/*": ["visual-regression-shared/src/*"],
+      "@visual-regression-shared/*": ["./node_modules/visual-regression-shared/src/*"],
     },
     "baseUrl": "./"
   },
