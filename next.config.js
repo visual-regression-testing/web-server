@@ -7,10 +7,6 @@ const nextConfig = {
   reactStrictMode: true,
 }
 
-if (process.env.GITHUB_ID && process.env.GITHUB_SECRET) {
-  console.log('GitHub provider credentials set');
-}
-
 module.exports = nextConfig
 
 // proceed to transpile typescript dependencies
