@@ -24,7 +24,7 @@
     "react-dom": "17.0.2",
     "serverless-mysql": "^1.5.4",
     "swr": "^1.1.2",
-    "visual-regression-shared": "git+https://github.com/visual-regression-testing/shared"
+    "visual-regression-shared": "github:visual-regression-testing/shared"
   },
   "devDependencies": {
     "@types/formidable": "^2.0.3",
