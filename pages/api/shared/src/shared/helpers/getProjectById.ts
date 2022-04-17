@@ -3,7 +3,7 @@ import {Project} from './listProjectsOfUser';
 
 export async function getProjectyId(projectId: number): Promise<any> {
 
-    return `${process.env.GITHUB_ID} + 11111`;
+    return `${process.env.GITHUB_ID} + ${process.env.MYSQL_PORT}`;
 
     try {
         return query<Project[]>(
