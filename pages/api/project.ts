@@ -5,18 +5,18 @@ import {getProjectyId} from "@visual-regression-shared/shared/helpers/getProject
 
 async function getHandler(
     req: NextApiRequest,
-    res: NextApiResponse<{project: Project, builds: Build[]} | undefined>
+    res: NextApiResponse<any>
 ) {
     const {id: projectId} = req.query as {id: string};
     const formattedProjectId: number = parseInt(projectId, 10);
 
-    const project = await getProjectyId(formattedProjectId);
-    const builds = await listBuildsOfProject(formattedProjectId);
+    // const project = await getProjectyId(formattedProjectId);
+    // const builds = await listBuildsOfProject(formattedProjectId);
 
     res.status(200).send({
-        builds,
-        project: (project as Project[])[0]
-    } as { project: Project, builds: Build[]});
+        builds: [],
+        project: projectId
+    });
 }
 
 export default async function handler(
