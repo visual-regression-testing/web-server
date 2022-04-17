@@ -13,6 +13,9 @@ frontend:
         - nvm install 16.13.0
         - nvm use 16.13.0
         - npm run build
+        - echo "GITHUB_ID=$GITHUB_ID" >> .env
+        - echo "GITHUB_SECRET=$GITHUB_SECRET" >> .env
+        - echo "NEXTAUTH_URL=$NEXTAUTH_URL" >> .env
   artifacts:
     baseDirectory: .next
     files:
