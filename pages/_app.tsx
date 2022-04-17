@@ -1,8 +1,7 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 
-import { Amplify } from "aws-amplify";
-import { SessionProvider } from "next-auth/react"
+import { Provider as SessionProvider } from "next-auth/client"
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (

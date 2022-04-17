@@ -1,8 +1,8 @@
-import { useSession, signIn, signOut } from "next-auth/react"
+import { useSession, signIn, signOut } from "next-auth/client"
 import {NextPage} from "next";
 
 const Component: NextPage = () => {
-    const { data: session } = useSession();
+    const [session] = useSession()
 
     if (session) {
         return (

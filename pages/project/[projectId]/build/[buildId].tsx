@@ -1,4 +1,4 @@
-import {useSession, getSession} from "next-auth/react"
+import {useSession, getSession} from "next-auth/client"
 import {NextPage} from "next";
 import {useRouter} from "next/router";
 
@@ -22,7 +22,7 @@ export async function getServerSideProps(context: any) {
 const fetcher = (...args) => fetch(...args).then(res => res.json());
 
 const Component: NextPage = ({ props }: any) => {
-    const { data: session } = useSession();
+    const [session] = useSession()
     const router = useRouter()
 
     if (session) {
