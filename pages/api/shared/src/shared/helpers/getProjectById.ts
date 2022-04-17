@@ -2,7 +2,8 @@ import {query} from '../../config/db';
 import {Project} from './listProjectsOfUser';
 
 export async function getProjectyId(projectId: number): Promise<any> {
-    return 'return from project id';
+
+    return `${process.env.GITHUB_ID} + 11111`;
 
     try {
         return query<Project[]>(
