@@ -17,7 +17,7 @@
     "formidable": "^3.2.1",
     "next": "^10.0.8",
     "next-auth": "^4.1.2",
-    "next-transpile-modules": "^9.0.0",
+    "next-transpile-modules": "^7.3.0",
     "pixelmatch": "^5.2.1",
     "pngjs": "^6.0.0",
     "react": "17.0.2",
