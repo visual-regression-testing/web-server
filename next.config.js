@@ -3,6 +3,12 @@ const nextConfig = {
   env: {
     GITHUB_ID: process.env.GITHUB_ID,
     GITHUB_SECRET: process.env.GITHUB_SECRET,
+
+    MYSQL_HOST: process.env.MYSQL_HOST,
+    MYSQL_DATABASE: process.env.MYSQL_DATABASE,
+    MYSQL_USERNAME: process.env.MYSQL_USERNAME,
+    MYSQL_PASSWORD: process.env.MYSQL_PASSWORD,
+    PORT: 3306
   },
   reactStrictMode: true,
   webpack: (config, { isServer }) => {

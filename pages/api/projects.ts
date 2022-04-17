@@ -3,12 +3,14 @@ import {listProjectsOfUser, Project} from "@visual-regression-shared/shared/help
 
 async function getHandler(
     req: NextApiRequest,
-    res: NextApiResponse<Project[]>
+    res: NextApiResponse<any>
 ) {
     const {email} = req.query as {email: string};
-    const projects = await listProjectsOfUser(email);
+    // const projects = await listProjectsOfUser(email);
 
-    res.status(200).send(projects ?? []);
+    res.status(200).send({
+        test: process.env.MYSQL_DATABASE
+    });
 }
 
 export default async function handler(
