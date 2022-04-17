@@ -5,12 +5,14 @@ const nextConfig = {
     GITHUB_SECRET: process.env.GITHUB_SECRET,
   },
   reactStrictMode: true,
+  webpack: (config, { isServer }) => {
+    return config
+  },
+  webpack5: false,
 }
-
-module.exports = nextConfig
 
 // proceed to transpile typescript dependencies
 // https://github.com/martpie/next-transpile-modules#withtmtranspilemodules--options
 const withTM = require('next-transpile-modules')(['visual-regression-shared']); // pass the modules you would like to see transpiled
 
-module.exports = withTM({});
+module.exports = withTM(nextConfig);
