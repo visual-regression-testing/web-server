@@ -10,7 +10,7 @@ const nextConfig = {
 module.exports = nextConfig
 
 const transpileModulesOptions = process.env.NODE_ENV === 'local' ? {
-  resolveSymlinks: false // todo this is due to running `npm link` -> https://github.com/martpie/next-transpile-modules#note-on-resolvesymlinks
+  resolveSymlinks: false // this is for linking packages with `npm link` -> https://github.com/martpie/next-transpile-modules#note-on-resolvesymlinks
 } : {};
 
 // proceed to transpile typescript dependencies
