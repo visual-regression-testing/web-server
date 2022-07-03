@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import * as fs from "fs";
 import {checkAuth} from "@visual-regression-shared/shared/helpers/authorization/checkAuth";
-import {createBuildByPercyToken} from "@visual-regression-shared/shared/helpers/createBuildByPercyToken";
+import {createBuildByPercyToken, PercyBuild} from "@visual-regression-shared/shared/helpers/createBuildByPercyToken";
 import {getProjectByPercytToken} from "@visual-regression-shared/shared/helpers/getProjectByPercyToken";
 import {Project} from "@visual-regression-shared/shared/helpers/listProjectsOfUser";
 
@@ -91,7 +91,13 @@ async function postHandler(
 
     fs.writeFileSync('./tmp/logs/build.log', req.body);
 
-    const build: [{  id: number }] = await createBuildByPercyToken(percyToken);
+    //  we trim the branch because it comes with a line break in it from @percy/cli
+    const build: PercyBuild[] | undefined = await createBuildByPercyToken(percyToken, parsedBody.data.attributes.branch.trim(), parsedBody.data.attributes["target-branch"]?.trim() || null);
+
+    if (!build) {
+        throw new Error('Could not create build');
+    }
+
     const project: [Project] | undefined = await getProjectByPercytToken(percyToken);
 
     // const response = await createBuildByPercyToken({
