@@ -1,9 +1,9 @@
 import {GetServerSideProps, NextPage} from 'next';
 import {useRouter} from 'next/router';
 import useSWR from 'swr';
-import {ListObjectsOutput} from "@aws-sdk/client-s3";
 import config from "@visual-regression-shared/config/config";
 import {TestInformation} from "../../../../api/read";
+import Image from 'next/image'
 
 // @ts-ignore
 const fetcher = (...args) => fetch(...args).then(res => res.json());
@@ -95,7 +95,9 @@ const PullRequest: NextPage = () => {
                                 <td>
                                     {file.buildInformation.test_name}
                                 </td>
-                                {file.images.map((image, fileIndex) => <td key={fileIndex}><img alt={file.buildInformation.test_name} width="300" src={`https://${bucket}.s3.amazonaws.com/${image}`}/></td>)}
+                                {file.images.map((image, fileIndex) => <td key={fileIndex}>
+                                    <Image alt={file.buildInformation.test_name} width={300} src={`https://${bucket}.s3.amazonaws.com/${image}`}/>
+                                </td>)}
                             </tr>
                         )
                     })}
