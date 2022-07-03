@@ -8,10 +8,16 @@ Working with Percy 1.5.1
 
 ## Getting Started
 
-First, run the development server:
+Run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
+```
+
+Before running the tests in your project, set the env var below so that Percy CLI will point to your server.
+
+```
+export PERCY_CLIENT_API_URL=http://localhost:3000/api/v1
 ```
