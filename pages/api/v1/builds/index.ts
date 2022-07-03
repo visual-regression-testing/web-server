@@ -98,7 +98,11 @@ async function postHandler(
         throw new Error('Could not create build');
     }
 
-    const project: [Project] | undefined = await getProjectByPercytToken(percyToken);
+    const project: Project[] | undefined = await getProjectByPercytToken(percyToken);
+
+    if (!project) {
+        throw new Error('Could not find project');
+    }
 
     // const response = await createBuildByPercyToken({
     //     branch: parsedBody.data.attributes.branch,
@@ -120,7 +124,7 @@ async function postHandler(
                 partial: false,
                 // todo this the url of the build that's output to the UI
                 // todo hardcoded to localhost
-                'web-url': `http://localhost:3000/project/${(project as [Project])[0].id}/build/${build[0].id}`,
+                'web-url': `http://localhost:3000/project/${project[0].id}/build/${build[0].id}`,
                 'commit-html-url': null,
                 'branch-html-url': null,
                 'pull-request-html-url': null,
